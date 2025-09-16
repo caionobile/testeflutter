@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:teste_flutter/features/catalog/entities/category.entity.dart';
 import 'package:teste_flutter/shared/widgets/primary_button.widget.dart';
 
 import '../../catalog/stores/catalog.store.dart';
@@ -15,13 +16,12 @@ class _PosPageState extends State<PosPage> {
   final catalogStore = GetIt.I<CatalogStore>();
   bool _expanded = false;
   int? _selectedCategoryIndex;
-  final List<String> _categories =
-      List.generate(20, (index) => 'Categoria ${index + 1}');
 
   @override
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.of(context).size.width < 600;
     final int crossAxisCount = MediaQuery.of(context).size.width ~/ 120;
+    final List<Categoria> _categories = catalogStore.categorias;
 
     return Scaffold(
       appBar: isMobile
@@ -93,7 +93,7 @@ class _PosPageState extends State<PosPage> {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     child: ChoiceChip(
-                      label: Text(category),
+                      label: Text(category.nome ?? ''),
                       selected: _selectedCategoryIndex == index,
                       onSelected: (selected) {
                         setState(() {
@@ -115,7 +115,9 @@ class _PosPageState extends State<PosPage> {
                   spacing: 8,
                   runSpacing: 8,
                   children: _buildCategoryChips(
-                      _expanded ? _categories.length : 11, itemWidth),
+                    _expanded ? _categories.length : 11,
+                    itemWidth,
+                  ),
                 );
               },
             ),
@@ -143,6 +145,7 @@ class _PosPageState extends State<PosPage> {
   }
 
   List<Widget> _buildCategoryChips(int count, double itemWidth) {
+    final List<Categoria> _categories = catalogStore.categorias;
     final List<Widget> chips = [];
     final int displayCount =
         count > _categories.length ? _categories.length : count;
@@ -155,7 +158,7 @@ class _PosPageState extends State<PosPage> {
             label: SizedBox(
               width: double.infinity,
               child: Text(
-                _categories[i],
+                _categories[i].nome ?? '',
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
               ),
