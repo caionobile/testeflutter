@@ -113,7 +113,7 @@ ThemeData lightTheme() {
       foregroundColor: _green,
       highlightElevation: 0,
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: Colors.white,
       surfaceTintColor: Colors.transparent,
       elevation: 8,
@@ -306,7 +306,7 @@ ThemeData lightTheme() {
         ),
       ),
     ),
-    dialogTheme: const DialogTheme(
+    dialogTheme: const DialogThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(16),
