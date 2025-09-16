@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:teste_flutter/features/catalog/entities/category.entity.dart';
+import 'package:teste_flutter/features/catalog/entities/item_categoria.entity.dart';
 import 'package:teste_flutter/shared/widgets/primary_button.widget.dart';
 
 import '../../catalog/stores/catalog.store.dart';
@@ -22,6 +23,12 @@ class _PosPageState extends State<PosPage> {
     final bool isMobile = MediaQuery.of(context).size.width < 600;
     final int crossAxisCount = MediaQuery.of(context).size.width ~/ 120;
     final List<Categoria> _categories = catalogStore.categorias;
+    Categoria? _selectedCategory = _selectedCategoryIndex != null
+        ? _categories[_selectedCategoryIndex!]
+        : null;
+    List<ItemCategoria> _products = _selectedCategory != null
+        ? _selectedCategory.itens!
+        : _categories.expand((categoria) => categoria.itens!.toList()).toList();
 
     return Scaffold(
       appBar: isMobile
@@ -122,21 +129,32 @@ class _PosPageState extends State<PosPage> {
               },
             ),
           Expanded(
-            child: GridView.count(
-              crossAxisCount: crossAxisCount,
-              childAspectRatio: 0.8,
-              children: List.generate(
-                  20,
-                  (index) => Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.image, size: 40),
-                            const SizedBox(height: 8),
-                            Text('Item ${index + 1}'),
-                          ],
-                        ),
-                      )),
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: _products.length,
+              itemBuilder: (context, index) {
+                final product = _products[index];
+
+                return Card(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.image, size: 40),
+                      const SizedBox(height: 8),
+                      Text(
+                        product.nome,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
